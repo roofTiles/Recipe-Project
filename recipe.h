@@ -31,6 +31,7 @@ typedef struct Recipes{
   int prep_time[2];
 } Recipe;
 
+extern FILE *database;
 extern Recipe recipes[NUM_RECIPES];
 extern char all_categories[CATEGORIES_SIZE][CHAR_SIZE];
 
@@ -54,3 +55,4 @@ void print_recipe(int);
 /* Parsing Database */
 void parseDatabase();
 void parseRecipe();
+void parseLine(char**);

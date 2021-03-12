@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include "recipe.h"
 
-
 FILE *database;
 
 void main(){
@@ -14,7 +13,7 @@ void main(){
   }
 
   /* Parse Database */
-
+  parseDatabase();
 
   /* Get valid function option and perform it */
   int valid_option;
