@@ -7,7 +7,7 @@
 
 /* Size Constants */
 #define NUM_RECIPES 10000
-#define CHAR_SIZE 100
+#define CHAR_SIZE 101
 #define CATEGORIES_PER_RECIPE 8
 #define CATEGORIES_SIZE 500
 
@@ -54,5 +54,5 @@ void print_recipe(int);
 
 /* Parsing Database */
 void parseDatabase();
-void parseRecipe();
+void parseRecipeHeaders();
 void parseLine(char**);
