@@ -56,3 +56,4 @@ void print_recipe(int);
 void parseDatabase();
 void parseRecipeHeaders();
 void parseLine(char**);
+void addCategory(char*);

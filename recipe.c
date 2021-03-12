@@ -14,7 +14,7 @@ void main(){
 
   /* Parse Database */
   parseDatabase();
-
+  
   /* Get valid function option and perform it */
   int valid_option;
   while (TRUE){

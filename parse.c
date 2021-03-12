@@ -3,8 +3,10 @@
 #include <string.h>
 #include "recipe.h"
 
+char all_categories[CATEGORIES_SIZE][CHAR_SIZE];
 char recipeHeader[] = "                             ************************\n";
 Recipe currentRecipe;
+int allCategorySize = 0;
 
 void parseDatabase(){
   int numOfRecipes = 0;
@@ -54,8 +56,10 @@ void parseRecipeHeaders(){
   sscanf(line, "Categories:  %[^\n]", currentRecipe.categories[0]);
   free(line);
   parseLine(&line);
+  addCategory(currentRecipe.categories[0]); // add category to category list
   while(strcmp("\n", line) != 0){
     sscanf(line, "             %[^\n]", currentRecipe.categories[categoryIndex]);
+    addCategory(currentRecipe.categories[categoryIndex]); // add category to category list
     categoryIndex++;
     free(line);
     parseLine(&line);
@@ -83,4 +87,21 @@ void parseLine(char** line){
     *line = (char*) realloc(*line, size * sizeof(char)); // increases size of char array when necessary
   }while(c != '\n' && c != EOF);
   *(*line + size - 1) = '\0';  // add null terminator for string comparison
+}
+
+/* Adds a category descriptor to all_categories if not present */
+void addCategory(char* category){
+  int i;
+  for (i = 0; i < allCategorySize; i++){
+    if(strcmp(all_categories[i], category) == 0){
+      return;
+    }
+  }
+
+  // copying category if not present in all_categories
+  int c;
+  for (c = 0; c < CHAR_SIZE; c++){
+    all_categories[allCategorySize][c] = *(category + c);
+  }
+  allCategorySize++;
 }
