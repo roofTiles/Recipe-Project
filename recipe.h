@@ -12,11 +12,12 @@
 #define CATEGORIES_SIZE 500
 
 /* Output Constants */
-#define ID 3;
-#define NAME 15;
-#define AUTHOR 15;
-#define PREP_TIME 4;
-#define CATEGORY_DESCRIPTORS 30;
+#define ID 3
+#define NAME 15
+#define AUTHOR 15
+#define HOUR 1
+#define MINUTE 2
+#define CATEGORY_DESCRIPTORS 30
 
 /* Database files */
 #define FIRST_DATABASE "recipes0.data"
@@ -26,6 +27,7 @@
 /* Recipe Data Structures */
 
 typedef struct Recipes{
+  int id;
   char title[CHAR_SIZE], author[CHAR_SIZE], categories[CATEGORIES_PER_RECIPE][CHAR_SIZE];
   char *ingredients, *instructions;
   int prep_time[2];
@@ -34,7 +36,7 @@ typedef struct Recipes{
 extern FILE *database;
 extern Recipe recipes[NUM_RECIPES];
 extern char all_categories[CATEGORIES_SIZE][CHAR_SIZE];
-
+extern int numOfRecipes;
 
 /* Handling Input */
 
@@ -50,9 +52,11 @@ void print_all();
 void print_prep();
 void print_category();
 void print_summary(int);
+void printChars(char*, int);
 void print_recipe(int);
 
 /* Parsing Database */
+
 void parseDatabase();
 void parseRecipeHeaders();
 int parseRecipeBodies();

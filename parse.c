@@ -10,6 +10,7 @@ Recipe currentRecipe;
 int allCategorySize = 0;
 int bodySize, lineSize;
 int recipeNumber = 0;
+int numOfRecipes;
 
 void parseDatabase(){
   char *line;
@@ -20,12 +21,14 @@ void parseDatabase(){
   while (!endOfFile){
     parseRecipeHeaders();
     endOfFile = parseRecipeBodies();
+    currentRecipe.id = recipeNumber;
+    
     recipes[recipeNumber] = currentRecipe;
     recipeNumber++;
   }
  
   printf("Parsed %d recipes\n", recipeNumber);
-  
+  numOfRecipes = recipeNumber;
 }
 
 /* Parses Recipe Headers */
@@ -70,7 +73,7 @@ void parseRecipeHeaders(){
   while(categoryIndex < CATEGORIES_PER_RECIPE){
     int c;
     for (c = 0; c < CHAR_SIZE; c++){
-      currentRecipe.categories[categoryIndex][c] = 0;
+      currentRecipe.categories[categoryIndex][c] = '\0';
     }
     categoryIndex++;
   }

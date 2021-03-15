@@ -62,7 +62,7 @@ int get_valid_option(){
   scanf("%d", &input);
   switch(input){
     case 1:
-      // print_all()
+      print_all();
       break;
       
     case 2:
