@@ -27,7 +27,7 @@
 
 typedef struct Recipes{
   char title[CHAR_SIZE], author[CHAR_SIZE], categories[CATEGORIES_PER_RECIPE][CHAR_SIZE];
-  char *ingredient, *instructions;
+  char *ingredients, *instructions;
   int prep_time[2];
 } Recipe;
 
@@ -55,5 +55,7 @@ void print_recipe(int);
 /* Parsing Database */
 void parseDatabase();
 void parseRecipeHeaders();
+void parseRecipeBodies();
 void parseLine(char**);
+void addLine(char**, char*);
 void addCategory(char*);

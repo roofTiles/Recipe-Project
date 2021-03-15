@@ -7,6 +7,7 @@ char all_categories[CATEGORIES_SIZE][CHAR_SIZE];
 char recipeHeader[] = "                             ************************\n";
 Recipe currentRecipe;
 int allCategorySize = 0;
+int bodySize, lineSize;
 
 void parseDatabase(){
   int numOfRecipes = 0;
@@ -14,13 +15,16 @@ void parseDatabase(){
     
   parseLine(&line);
   while (*(line) != EOF){
+    
     if (strcmp(line, recipeHeader) == 0){
       numOfRecipes++;
       parseRecipeHeaders();
+      parseRecipeBodies();
     }
     
     free(line);
     parseLine(&line);
+    
     
   }
   printf("Parsed %d recipes\n", numOfRecipes);
@@ -75,11 +79,37 @@ void parseRecipeHeaders(){
   }
 }
 
+/* Parses Recipe Bodies */
+void parseRecipeBodies(){
+
+  /* Parsing Ingredients List*/
+  char* line;
+  parseLine(&line); // skipping empty line
+  free(line);
+  
+  bodySize = 0; // resetting recipe body size
+  parseLine(&line);
+  
+  char* ingredients;
+  ingredients = (char*) calloc(lineSize, sizeof(char));
+  do{
+    addLine(&ingredients, line); // adding lines to ingredients
+    free(line);
+    parseLine(&line);
+  } while(strcmp(line, "Instructions:\n") != 0);
+  ingredients = (char*) realloc(ingredients, sizeof(char) * (bodySize + 1));
+  ingredients[bodySize] = '\0'; // adding null terminator to ingredients
+  printf("%s", ingredients);
+  currentRecipe.ingredients = ingredients;
+  free(ingredients);
+}
+
+
 /* Parses a line in database */
 void parseLine(char** line){
   int size = 1;
   char c;
-  *line = (char*) malloc(size * sizeof(char)); // changing address pointer refers to
+  *line = (char*) calloc(size, sizeof(char)); // changing address pointer refers to
   do{
     c = fgetc(database);
     *(*line + size - 1) = c; // adds current characters in line to array
@@ -87,7 +117,23 @@ void parseLine(char** line){
     *line = (char*) realloc(*line, size * sizeof(char)); // increases size of char array when necessary
   }while(c != '\n' && c != EOF);
   *(*line + size - 1) = '\0';  // add null terminator for string comparison
+  lineSize = size; // update lineSize
 }
+
+
+/* Adds a line to given recipe body pointer */
+void addLine(char** body, char* line){
+  // increase size of recipe body array
+  *body = (char*) realloc(*body, sizeof(char) * (bodySize + lineSize - 1));
+
+  // copying line to end of recipe body
+  int i;
+  for (i = bodySize; i < (bodySize + lineSize - 1); i++){
+    *(*body + i) = *(line + i - bodySize);
+  }
+  bodySize += lineSize - 1;
+}
+
 
 /* Adds a category descriptor to all_categories if not present */
 void addCategory(char* category){
