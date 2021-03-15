@@ -66,7 +66,7 @@ int get_valid_option(){
       break;
       
     case 2:
-      // print_prep()
+      print_prep();
       break;
 
     case 3:

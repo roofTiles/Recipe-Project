@@ -42,7 +42,6 @@ extern int numOfRecipes;
 
 int get_valid_database();
 int get_valid_option();
-int get_valid_type(int *, int *);
 void invalid_input();
 
 
@@ -52,6 +51,8 @@ void print_all();
 void print_prep();
 void print_category();
 void print_summary(int);
+int findDescriptorLength(char*);
+void copyChars(char*, char*, int);
 void printChars(char*, int);
 void print_recipe(int);
 
