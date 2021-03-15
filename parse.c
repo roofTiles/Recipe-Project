@@ -5,29 +5,26 @@
 
 char all_categories[CATEGORIES_SIZE][CHAR_SIZE];
 char recipeHeader[] = "                             ************************\n";
+Recipe recipes[NUM_RECIPES];
 Recipe currentRecipe;
 int allCategorySize = 0;
 int bodySize, lineSize;
+int recipeNumber = 0;
 
 void parseDatabase(){
-  int numOfRecipes = 0;
-  char *line, ingredients, instructions;
-    
+  char *line;
+  int endOfFile = FALSE;
   parseLine(&line);
-  while (*(line) != EOF){
-    
-    if (strcmp(line, recipeHeader) == 0){
-      numOfRecipes++;
-      parseRecipeHeaders();
-      parseRecipeBodies();
-    }
-    
-    free(line);
-    parseLine(&line);
-    
-    
+  free(line);
+  
+  while (!endOfFile){
+    parseRecipeHeaders();
+    endOfFile = parseRecipeBodies();
+    recipes[recipeNumber] = currentRecipe;
+    recipeNumber++;
   }
-  printf("Parsed %d recipes\n", numOfRecipes);
+ 
+  printf("Parsed %d recipes\n", recipeNumber);
   
 }
 
@@ -80,30 +77,63 @@ void parseRecipeHeaders(){
 }
 
 /* Parses Recipe Bodies */
-void parseRecipeBodies(){
-
-  /* Parsing Ingredients List*/
+int parseRecipeBodies(){
   char* line;
   parseLine(&line); // skipping empty line
   free(line);
   
-  bodySize = 0; // resetting recipe body size
-  parseLine(&line);
-  
-  char* ingredients;
-  ingredients = (char*) calloc(lineSize, sizeof(char));
-  do{
-    addLine(&ingredients, line); // adding lines to ingredients
-    free(line);
-    parseLine(&line);
-  } while(strcmp(line, "Instructions:\n") != 0);
-  ingredients = (char*) realloc(ingredients, sizeof(char) * (bodySize + 1));
-  ingredients[bodySize] = '\0'; // adding null terminator to ingredients
-  printf("%s", ingredients);
+  bodySize = 0;
+
+  /* Parsing Ingredients List */
+  char* ingredients = (char*) malloc(0);
+  addLinesUntil(&ingredients, "Instructions:\n");
   currentRecipe.ingredients = ingredients;
   free(ingredients);
+  
+  bodySize = 0;
+  
+  /* Parsing Recipe Instructions */
+  char* instructions = (char*) malloc(0);
+  int endOfFile;
+  endOfFile = addLinesUntil(&instructions, recipeHeader); // see if EOF char reached yet
+  currentRecipe.instructions = instructions;
+  free(instructions);
+  return(endOfFile);
 }
 
+/* Adds lines to a recipe body pointer until a given string */
+int addLinesUntil(char** recipeBody, char* endLine){
+  char* line;
+  parseLine(&line);
+  do{
+    addLine(recipeBody, line);
+    free(line);
+    parseLine(&line);
+  } while(strcmp(line, endLine) != 0 && *line != EOF);
+
+  // adding null terminator to ingredients
+  *recipeBody = (char*) realloc(*recipeBody, sizeof(char) * (bodySize + 1));
+  *(*recipeBody + bodySize) = '\0';
+
+  if (*line == EOF){
+    return(TRUE);
+  }
+
+  return(FALSE);
+} 
+
+/* Adds a line to given recipe body pointer */
+void addLine(char** body, char* line){
+  // increase size of recipe body array
+  *body = (char*) realloc(*body, sizeof(char) * (bodySize + lineSize - 1));
+
+  // copying line to end of recipe body
+  int i;
+  for (i = bodySize; i < (bodySize + lineSize - 1); i++){
+    *(*body + i) = *(line + i - bodySize);
+  }
+  bodySize += lineSize - 1;
+}
 
 /* Parses a line in database */
 void parseLine(char** line){
@@ -119,21 +149,6 @@ void parseLine(char** line){
   *(*line + size - 1) = '\0';  // add null terminator for string comparison
   lineSize = size; // update lineSize
 }
-
-
-/* Adds a line to given recipe body pointer */
-void addLine(char** body, char* line){
-  // increase size of recipe body array
-  *body = (char*) realloc(*body, sizeof(char) * (bodySize + lineSize - 1));
-
-  // copying line to end of recipe body
-  int i;
-  for (i = bodySize; i < (bodySize + lineSize - 1); i++){
-    *(*body + i) = *(line + i - bodySize);
-  }
-  bodySize += lineSize - 1;
-}
-
 
 /* Adds a category descriptor to all_categories if not present */
 void addCategory(char* category){

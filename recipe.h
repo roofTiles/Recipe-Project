@@ -55,7 +55,8 @@ void print_recipe(int);
 /* Parsing Database */
 void parseDatabase();
 void parseRecipeHeaders();
-void parseRecipeBodies();
-void parseLine(char**);
+int parseRecipeBodies();
+int addLinesUntil(char**, char*);
 void addLine(char**, char*);
+void parseLine(char**);
 void addCategory(char*);
