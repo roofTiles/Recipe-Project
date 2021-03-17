@@ -57,7 +57,7 @@ int get_valid_database(){
 
 /* Gets input for action and performs it if valid */
 int get_valid_option(){
-  int input;
+  int input, i;
   printf("Enter option:  ");
   scanf("%d", &input);
   switch(input){
@@ -70,14 +70,19 @@ int get_valid_option(){
       break;
 
     case 3:
-      // print_category()
+      print_category();
       break;
 
     case 4:
-      // print_recipe()
+      print_recipe();
       break;
 
     case 5:
+      // must free dynamically allocated ingredients and instructions for each recipe
+      for (i = 0; i < numOfRecipes; i++){
+        free(recipes[i].ingredients);
+        free(recipes[i].instructions);
+      }
       exit(1);
 
     default:

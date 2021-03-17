@@ -54,7 +54,7 @@ void print_summary(int);
 int findDescriptorLength(char*);
 void copyChars(char*, char*, int);
 void printChars(char*, int);
-void print_recipe(int);
+void print_recipe();
 
 /* Parsing Database */
 
@@ -64,4 +64,4 @@ int parseRecipeBodies();
 int addLinesUntil(char**, char*);
 void addLine(char**, char*);
 void parseLine(char**);
-void addCategory(char*);
+int addCategory(char*, int);

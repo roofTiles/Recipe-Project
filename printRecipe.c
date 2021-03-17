@@ -1,7 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "recipe.h"
 
+/* Prints all recipe summaries */
 void print_all(){
   int i;
   for (i = 0; i < numOfRecipes; i++){
@@ -9,10 +11,11 @@ void print_all(){
   }
 }
 
+/* Prints recipe summaries with prep time less than given */
 void print_prep(){
   int h, m, validInput;
 
-  /* Getting valid time */
+  // Getting valid time
   validInput = FALSE;
   while (!validInput){
     printf("Enter time (h m):  ");
@@ -25,6 +28,7 @@ void print_prep(){
     }
   }
 
+  // Printing recipes with prep time less than or equal to given
   int i;
   for (i = 0; i < numOfRecipes; i++){
     int* time;
@@ -39,6 +43,62 @@ void print_prep(){
   }
 }
 
+/* Prints recipe summaries with a given category */
+void print_category(){
+  char input[CHAR_SIZE];
+  int validInput = FALSE;
+  while (!validInput){
+    printf("Enter category:  ");
+    getchar(); // remove newline character in stdin buffer
+    scanf("%[^\n]", input);
+    int presentCategory = addCategory(input, FALSE); // check if category present in database
+    if (presentCategory){ validInput = TRUE; }
+    if (!presentCategory){ invalid_input(); }
+  }
+
+  // print recipe summaries with given category
+  int i;
+  for (i = 0; i < numOfRecipes; i++){
+    Recipe currentRecipe = recipes[i];
+    int j;
+    for (j = 0; j < CATEGORIES_PER_RECIPE; j++){
+      if (strcmp(currentRecipe.categories[j], input) == 0){ print_summary(i); }
+    }
+  }
+}
+
+/* Prints out an entire recipe */
+void print_recipe(){
+
+  // Getting valid recipe number
+  int input, validInput;
+  validInput = FALSE;
+  while (!validInput){
+    printf("Enter recipe number:  ");
+    scanf("%d", &input);
+    if (input >= 0 && input < numOfRecipes){ validInput = TRUE; }
+    else{ invalid_input(); }
+  }
+
+  // Printing given recipe
+  Recipe currentRecipe = recipes[input];
+  printf("Recipe:      %s\n", currentRecipe.title);
+  printf("By:          %s\n", currentRecipe.author);
+  printf("Prep Time:   %d:%02d\n", currentRecipe.prep_time[0], currentRecipe.prep_time[1]);
+  printf("Categories:  %s\n", currentRecipe.categories[0]);
+  int i = 1;
+  while (findDescriptorLength((char *) currentRecipe.categories[i]) != 0){
+    printf("             %s\n", currentRecipe.categories[i]);
+    i++;
+  }
+  printf("\n");
+  printf("Ingredients:\n");
+  printf("%s", currentRecipe.ingredients);
+  printf("Instructions:\n");
+  printf("%s", currentRecipe.instructions);
+}
+
+/* Prints short summaries for each recipe */
 void print_summary(int recipeNum){
   Recipe currentRecipe = recipes[recipeNum];
   printf("%*d.  ", ID, recipeNum%1000); // ensures ID is less than 3 characters even if recipeNum > 999
@@ -72,6 +132,7 @@ void print_summary(int recipeNum){
   printf("%s", categories);
   printf("\n");
 }
+
 
 /* Finds length of given string */
 int findDescriptorLength(char* category){

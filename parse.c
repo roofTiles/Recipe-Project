@@ -60,10 +60,10 @@ void parseRecipeHeaders(){
   sscanf(line, "Categories:  %[^\n]", currentRecipe.categories[0]);
   free(line);
   parseLine(&line);
-  addCategory(currentRecipe.categories[0]); // add category to category list
+  addCategory(currentRecipe.categories[0], TRUE); // add category to category list
   while(strcmp("\n", line) != 0){
     sscanf(line, "             %[^\n]", currentRecipe.categories[categoryIndex]);
-    addCategory(currentRecipe.categories[categoryIndex]); // add category to category list
+    addCategory(currentRecipe.categories[categoryIndex], TRUE); // add category to category list
     categoryIndex++;
     free(line);
     parseLine(&line);
@@ -91,8 +91,7 @@ int parseRecipeBodies(){
   char* ingredients = (char*) malloc(0);
   addLinesUntil(&ingredients, "Instructions:\n");
   currentRecipe.ingredients = ingredients;
-  free(ingredients);
-  
+
   bodySize = 0;
   
   /* Parsing Recipe Instructions */
@@ -100,7 +99,6 @@ int parseRecipeBodies(){
   int endOfFile;
   endOfFile = addLinesUntil(&instructions, recipeHeader); // see if EOF char reached yet
   currentRecipe.instructions = instructions;
-  free(instructions);
   return(endOfFile);
 }
 
@@ -153,14 +151,16 @@ void parseLine(char** line){
   lineSize = size; // update lineSize
 }
 
-/* Adds a category descriptor to all_categories if not present */
-void addCategory(char* category){
+/* Adds a category descriptor to all_categories if not present & returns if */
+int addCategory(char* category, int addIfNotPresent){
   int i;
   for (i = 0; i < allCategorySize; i++){
     if(strcmp(all_categories[i], category) == 0){
-      return;
+      return(TRUE);
     }
   }
+
+  if (!addIfNotPresent){ return(FALSE); }
 
   // copying category if not present in all_categories
   int c;
@@ -168,4 +168,5 @@ void addCategory(char* category){
     all_categories[allCategorySize][c] = *(category + c);
   }
   allCategorySize++;
+  return(FALSE);
 }
