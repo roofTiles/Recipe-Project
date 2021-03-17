@@ -115,15 +115,12 @@ void print_summary(int recipeNum){
     char* currentCategory = (char*) (currentRecipe.categories + index);
     int currentLength = findDescriptorLength(currentCategory);
 
+    if (currentLength + length > 30){ break; } // ensures no shorter subsequent descriptors added
     // copy category descriptor if short
     if (currentLength + length + 1 <= 31 && currentLength != 0){
       copyChars(categories, currentCategory, length);
       categories[currentLength + length] = ',';
       length += currentLength + 1;
-    }
-
-    if (currentLength + length > 30){ // ensures no shorter subsequent descriptors added
-      break;
     }
   }
 
