@@ -62,7 +62,10 @@ void print_category(){
     Recipe currentRecipe = recipes[i];
     int j;
     for (j = 0; j < CATEGORIES_PER_RECIPE; j++){
-      if (strcmp(currentRecipe.categories[j], input) == 0){ print_summary(i); }
+      if (strcmp(currentRecipe.categories[j], input) == 0){ 
+        print_summary(i);
+        break;
+      }
     }
   }
 }
